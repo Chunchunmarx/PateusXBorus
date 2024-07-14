@@ -3,66 +3,58 @@ using UnityEngine;
 
 public class CharacterController : MonoBehaviour
 {
-    public float moveSpeed = 5f;
-    public float jumpForce = 10f;
-    public float dashSpeed = 20f;
-    public float dashDuration = 0.2f;
-    public GameObject bulletPrefab;
-    public Transform bulletSpawnPoint;
-    public float bulletSpeed = 10f;
-    public float fireRate = 0.2f;
+    [Header("Player Movement")]
+    [SerializeField] float m_MoveSpeed = 5f;
+    [SerializeField] float m_JumpForce = 10f;
+    [SerializeField] float m_DashSpeed = 20f;
+    [SerializeField] float m_DashDuration = 0.2f;
 
-    private float nextFireTime = 0f;
-    private bool isDashing = false;
-    private bool isGrounded = false;
-    private Rigidbody2D rb;
-    private bool isFacingRight = true;
-    private Vector2 dashDirection;
-    private LayerMask groundLayer;
+    [Header("Player Attack")]
+    [SerializeField]  float m_BulletSpeed = 10f;
+    [SerializeField]  float m_FireRate = 0.2f;
 
-    void Start()
-    {
-        rb = GetComponent<Rigidbody2D>();
-        
-        groundLayer = LayerMask.GetMask("Ground");
-    }
+    [Header("Prefabs")]
+    [SerializeField] GameObject m_BulletPrefab;
+    [SerializeField] Transform m_BulletSpawnPoint;
+
+    bool m_IsDashing = false;
+    bool m_IsGrounded = false;
+    bool m_IsFacingRight = true;
+    float m_NextFireTime = 0f;
+
+    Vector2 m_DashDirection;
 
     void Update()
     {
-        if (!isDashing)
+        if (!m_IsDashing)
         {
             Move();
         }
 
-        if (Input.GetButtonDown("Fire1") && Time.time > nextFireTime)
+        if (Input.GetButtonDown("Fire1") && Time.time > m_NextFireTime)
         {
             Shoot();
-            nextFireTime = Time.time + fireRate;
         }
 
-        if (Input.GetButtonDown("Jump") && isGrounded)
+        if (Input.GetButtonDown("Jump") && m_IsGrounded)
         {
             Jump();
         }
 
-        if (Input.GetButtonDown("Dash") && !isDashing)
+        if (Input.GetButtonDown("Dash") && !m_IsDashing)
         {
             StartCoroutine(Dash());
         }
-
-        
     }
 
     void Move()
     {
-        float moveX = Input.GetAxis("Horizontal") * moveSpeed;
+        Rigidbody2D rb = GetComponent<Rigidbody2D>();
+        float moveX = Input.GetAxis("Horizontal") * m_MoveSpeed;
         rb.velocity = new Vector2(moveX, rb.velocity.y);
 
-        if (moveX > 0 && !isFacingRight)
-        {
-            Flip();
-        }
-        else if (moveX < 0 && isFacingRight)
+        if ((moveX > 0 && !m_IsFacingRight) ||
+            (moveX < 0 && m_IsFacingRight))
         {
             Flip();
         }
@@ -70,37 +62,40 @@ public class CharacterController : MonoBehaviour
 
     void Shoot()
     {
-        GameObject bullet = Instantiate(bulletPrefab, bulletSpawnPoint.position, Quaternion.identity);
-        bullet.GetComponent<Rigidbody2D>().velocity = new Vector2(bulletSpeed * transform.localScale.x, 0);
+        GameObject bullet = Instantiate(m_BulletPrefab, m_BulletSpawnPoint.position, Quaternion.identity);
+        bullet.GetComponent<Rigidbody2D>().velocity = new Vector2(m_BulletSpeed * transform.localScale.x, 0);
+        m_NextFireTime = Time.time + m_FireRate;
     }
 
     void Jump()
     {
-        rb.velocity = new Vector2(rb.velocity.x, jumpForce);
-        isGrounded = false;
+        Rigidbody2D rb = GetComponent<Rigidbody2D>();
+        rb.velocity = new Vector2(rb.velocity.x, m_JumpForce);
+        m_IsGrounded = false;
     }
 
     IEnumerator Dash()
     {
-        isDashing = true;
-        dashDirection = new Vector2(Input.GetAxis("Horizontal"), 0).normalized;
-        rb.velocity = dashDirection * dashSpeed;
-        yield return new WaitForSeconds(dashDuration);
+        Rigidbody2D rb = GetComponent<Rigidbody2D>();
+        m_IsDashing = true;
+        m_DashDirection = new Vector2(Input.GetAxis("Horizontal"), 0).normalized;
+        rb.velocity = m_DashDirection * m_DashSpeed;
+        yield return new WaitForSeconds(m_DashDuration);
         rb.velocity = Vector2.zero;
-        isDashing = false;
+        m_IsDashing = false;
     }
 
     void OnCollisionEnter2D(Collision2D collision)
     {
         if (collision.contacts[0].normal.y > 0.5f)
         {
-            isGrounded = true;
+            m_IsGrounded = true;
         }
     }
 
     void Flip()
     {
-        isFacingRight = !isFacingRight;
+        m_IsFacingRight = !m_IsFacingRight;
         Vector3 scale = transform.localScale;
         scale.x *= -1;
         transform.localScale = scale;
