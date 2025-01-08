@@ -36,16 +36,14 @@ public class EnemyController : MonoBehaviour
             if (Time.time > nextFireTime)
             {
                 Shoot();
-                nextFireTime = Time.time + fireRate;
             }
+            return;
         }
         else
         {
             Patrol();
             DetectPlayer();
         }
-
-        
     }
 
     void Patrol()
@@ -86,6 +84,7 @@ public class EnemyController : MonoBehaviour
         GameObject bullet = Instantiate(bulletPrefab, bulletSpawnPoint.position, Quaternion.identity);
         Vector2 direction = (player.position - bulletSpawnPoint.position).normalized;
         bullet.GetComponent<Rigidbody2D>().velocity = direction * bulletSpeed;
+        nextFireTime = Time.time + fireRate;
     }
 
     void OnTriggerEnter2D(Collider2D other)
