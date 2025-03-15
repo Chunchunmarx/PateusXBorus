@@ -375,6 +375,11 @@ Transform:
   m_Children: []
   m_Father: {fileID: 1044175675}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!4 &874935570 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 6123991266064071888, guid: 3608129ce014c014092c570d7b61ff30, type: 3}
+  m_PrefabInstance: {fileID: 6349397356452468118}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1044175671 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 198439448562315860, guid: 37b9ff9baf21b5e46bb56213070a7fea, type: 3}
@@ -503,7 +508,7 @@ Transform:
   m_GameObject: {fileID: 1207089162}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 13.11, y: -0.34, z: 0.016022306}
+  m_LocalPosition: {x: 14.11, y: -0.34, z: 0.016022306}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -530,11 +535,23 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 6180890856251171529, guid: 2a0dd9843abf8f74c8e22779516e1c58, type: 3}
     - target: {fileID: 7254292551029125660, guid: 37b9ff9baf21b5e46bb56213070a7fea, type: 3}
+      propertyPath: m_BulletPrefab
+      value: 
+      objectReference: {fileID: 4064372169103160271, guid: f8cff202e259b044e8b5a60ddeda0a5d, type: 3}
+    - target: {fileID: 7254292551029125660, guid: 37b9ff9baf21b5e46bb56213070a7fea, type: 3}
       propertyPath: bulletSpawnPoint
       value: 
       objectReference: {fileID: 653291009}
     - target: {fileID: 7254292551029125660, guid: 37b9ff9baf21b5e46bb56213070a7fea, type: 3}
+      propertyPath: m_BulletSpawnPoint
+      value: 
+      objectReference: {fileID: 653291009}
+    - target: {fileID: 7254292551029125660, guid: 37b9ff9baf21b5e46bb56213070a7fea, type: 3}
       propertyPath: waypoints.Array.size
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 7254292551029125660, guid: 37b9ff9baf21b5e46bb56213070a7fea, type: 3}
+      propertyPath: m_Waypoints.Array.size
       value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 7254292551029125660, guid: 37b9ff9baf21b5e46bb56213070a7fea, type: 3}
@@ -543,6 +560,14 @@ PrefabInstance:
       objectReference: {fileID: 1090880713}
     - target: {fileID: 7254292551029125660, guid: 37b9ff9baf21b5e46bb56213070a7fea, type: 3}
       propertyPath: waypoints.Array.data[1]
+      value: 
+      objectReference: {fileID: 1207089163}
+    - target: {fileID: 7254292551029125660, guid: 37b9ff9baf21b5e46bb56213070a7fea, type: 3}
+      propertyPath: m_Waypoints.Array.data[0]
+      value: 
+      objectReference: {fileID: 1090880713}
+    - target: {fileID: 7254292551029125660, guid: 37b9ff9baf21b5e46bb56213070a7fea, type: 3}
+      propertyPath: m_Waypoints.Array.data[1]
       value: 
       objectReference: {fileID: 1207089163}
     - target: {fileID: 7305346167422880539, guid: 37b9ff9baf21b5e46bb56213070a7fea, type: 3}
@@ -647,6 +672,14 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 2238236042883772531, guid: 3608129ce014c014092c570d7b61ff30, type: 3}
+      propertyPath: m_BulletPrefab
+      value: 
+      objectReference: {fileID: 8160556170525230451, guid: 743d4c206a7f6f547b137e1df3b465fe, type: 3}
+    - target: {fileID: 2238236042883772531, guid: 3608129ce014c014092c570d7b61ff30, type: 3}
+      propertyPath: m_BulletSpawnPoint
+      value: 
+      objectReference: {fileID: 874935570}
     - target: {fileID: 5148505958616225664, guid: 3608129ce014c014092c570d7b61ff30, type: 3}
       propertyPath: m_Name
       value: Character

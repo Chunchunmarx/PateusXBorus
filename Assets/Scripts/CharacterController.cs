@@ -13,7 +13,7 @@ public class CharacterController : MonoBehaviour
     [SerializeField]  float m_BulletSpeed = 10f;
     [SerializeField]  float m_FireRate = 0.2f;
 
-    [Header("Prefabs")]
+    [Header("Prefabs/Refs")]
     [SerializeField] GameObject m_BulletPrefab;
     [SerializeField] Transform m_BulletSpawnPoint;
 
@@ -101,12 +101,10 @@ public class CharacterController : MonoBehaviour
         transform.localScale = scale;
     }
 
-  
-   
-
     private void OnDrawGizmos()
     {
+        //draw character center for detection
         Gizmos.color = Color.red;
-        Gizmos.DrawLine(transform.position, transform.position + Vector3.down * 1.1f);
+        Gizmos.DrawSphere(transform.position, 0.5f);
     }
 }
