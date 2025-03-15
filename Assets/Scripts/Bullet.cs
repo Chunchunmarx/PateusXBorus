@@ -1,15 +1,17 @@
 using System.Collections;
 using System.Collections.Generic;
+using System;
 using UnityEngine;
 
 public class Bullet : MonoBehaviour
 {
-    public float lifetime = 2f;
-    private Camera mainCamera;
+    [SerializeField] float m_Lifetime = 2f;
+    [SerializeField] EntityType m_TargetType;
+    Camera mainCamera;
 
     void Start()
     {
-        Destroy(gameObject, lifetime);
+        Destroy(gameObject, m_Lifetime);
         mainCamera = Camera.main;
     }
 
@@ -20,9 +22,11 @@ public class Bullet : MonoBehaviour
 
     void OnTriggerEnter2D(Collider2D other)
     {
-        if (other.CompareTag("Enemy"))
+        if ((other.GetComponent<CharacterController>() && m_TargetType == EntityType.ENEMY) ||
+            (other.GetComponent<EnemyController>() && m_TargetType == EntityType.PLAYER))
         {
-            Destroy(other.gameObject); // Destroy the enemy
+            BasicController basicController = other.GetComponent<BasicController>();
+            basicController.TakeDamage(1); // Notify the basicController that the bullet hit it; also 1 is hardcoded
             Destroy(gameObject); // Destroy the bullet
         }
     }

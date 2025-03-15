@@ -1,117 +1,96 @@
 using System.Collections;
 using UnityEngine;
 
-public class EnemyController : MonoBehaviour
+public class EnemyController : BasicController
 {
-    public float moveSpeed = 2f;
-    public float detectionRange = 5f;
-    public float chaseSpeed = 3f;
-    public int health = 1;
-    public Transform[] waypoints;
-    public GameObject bulletPrefab;
-    public Transform bulletSpawnPoint;
-    public float bulletSpeed = 5f;
-    public float fireRate = 1f;
+    [Header("Enemy Movement")]
+    [SerializeField] float m_MoveSpeed = 2f;
+    [SerializeField] float m_ChaseSpeed = 3f;
+    [SerializeField] float m_DetectionRange = 5f;
 
-    private int waypointIndex = 0;
-    private bool isChasing = false;
-    private Transform player;
-    private float nextFireTime = 0f;
+    [Header("Enemy Attack")]
+    [SerializeField] float m_BulletSpeed = 5f;
+    [SerializeField] float m_FireRate = 1f;
 
-    private Rigidbody2D rb;
+    [Header("Prefabs/Refs")]
+    [SerializeField] Transform[] m_Waypoints;
+    [SerializeField] GameObject m_BulletPrefab;
+    [SerializeField] Transform m_BulletSpawnPoint;
+    Transform m_Player;
+
+    int m_WaypointIndex = 0;
+    bool m_IsChasing = false;
+    float m_NextFireTime = 0f;
    
 
     void Start()
     {
-        rb = GetComponent<Rigidbody2D>();
-       
-        player = GameObject.FindGameObjectWithTag("Player").transform;
+        m_Player = GameObject.FindGameObjectWithTag("Player").transform;
     }
 
     void Update()
     {
-        if (isChasing)
+        if (m_IsChasing)
         {
             ChasePlayer();
-            if (Time.time > nextFireTime)
-            {
-                Shoot();
-                nextFireTime = Time.time + fireRate;
-            }
+            Shoot();
         }
         else
         {
             Patrol();
             DetectPlayer();
         }
-
-        
     }
 
     void Patrol()
     {
-        if (waypoints.Length == 0) return;
+        if (m_Waypoints.Length == 0) return;
 
-        Transform targetWaypoint = waypoints[waypointIndex];
+        Rigidbody2D rb = GetComponent<Rigidbody2D>();
+        Transform targetWaypoint = m_Waypoints[m_WaypointIndex];
         Vector2 direction = (targetWaypoint.position - transform.position).normalized;
-        rb.velocity = new Vector2(direction.x * moveSpeed, rb.velocity.y);
+        rb.velocity = new Vector2(direction.x * m_MoveSpeed, rb.velocity.y);
 
         if (Vector2.Distance(transform.position, targetWaypoint.position) < 0.1f)
         {
-            waypointIndex = (waypointIndex + 1) % waypoints.Length;
+            m_WaypointIndex = (m_WaypointIndex + 1) % m_Waypoints.Length;
         }
     }
 
     void DetectPlayer()
     {
-        if (Vector2.Distance(transform.position, player.position) <= detectionRange)
+        if (Vector2.Distance(transform.position, m_Player.position) <= m_DetectionRange)
         {
-            isChasing = true;
+            m_IsChasing = true;
         }
     }
 
     void ChasePlayer()
     {
-        Vector2 direction = (player.position - transform.position).normalized;
-        rb.velocity = new Vector2(direction.x * chaseSpeed, rb.velocity.y);
+        Rigidbody2D rb = GetComponent<Rigidbody2D>();
+        Vector2 direction = (m_Player.position - transform.position).normalized;
+        rb.velocity = new Vector2(direction.x * m_ChaseSpeed, rb.velocity.y);
 
-        if (Vector2.Distance(transform.position, player.position) > detectionRange)
+        if (Vector2.Distance(transform.position, m_Player.position) > m_DetectionRange)
         {
-            isChasing = false;
+            m_IsChasing = false;
         }
     }
 
     void Shoot()
     {
-        GameObject bullet = Instantiate(bulletPrefab, bulletSpawnPoint.position, Quaternion.identity);
-        Vector2 direction = (player.position - bulletSpawnPoint.position).normalized;
-        bullet.GetComponent<Rigidbody2D>().velocity = direction * bulletSpeed;
+        if (Time.time <= m_NextFireTime)
+            return;
+        GameObject bullet = Instantiate(m_BulletPrefab, m_BulletSpawnPoint.position, Quaternion.identity);
+        Vector2 direction = (m_Player.position - m_BulletSpawnPoint.position).normalized;
+        bullet.GetComponent<Rigidbody2D>().velocity = direction * m_BulletSpeed;
+        m_NextFireTime = Time.time + m_FireRate;
     }
 
-    void OnTriggerEnter2D(Collider2D other)
+    private void OnDrawGizmos()
     {
-        
-        if (other.CompareTag("Bullet"))
-        {
-            TakeDamage(1);
-            Destroy(other.gameObject);
-        }
+        //draw enemy detect distance
+        Gizmos.color = Color.red;
+        Gizmos.DrawWireSphere(transform.position, m_DetectionRange);
     }
-
-    void TakeDamage(int damage)
-    {
-        health -= damage;
-        if (health <= 0)
-        {
-            Die();
-        }
-    }
-
-    void Die()
-    {
-
-        // Add death animation or effects here
-        Destroy(gameObject);
-    }
-
 }
